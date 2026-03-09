@@ -11,9 +11,13 @@ export class BlockTemplates {
         return templates[type] || '';
     }
 
-    static profile(id) {
+        static profile(id) {
         return `
-            <button class="btn-delete">X</button>
+            <div class="block-controls">
+                <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, -1)">▲</button>
+                <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, 1)">▼</button>
+                <button class="btn-delete">X</button>
+            </div>
             <label>👤 프로필 이미지</label>
             <div class="drop-zone" id="drop_${id}">
                 <span>사진 선택</span>
@@ -29,6 +33,10 @@ export class BlockTemplates {
 
     static text(id) {
         return `
+            <div class="block-controls">
+                <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, -1)">▲</button>
+                <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, 1)">▼</button>
+                <button class="btn-delete">X</button>
             <button class="btn-delete">X</button>
             <label>📝 텍스트 블록</label>
             <label>제목</label>
@@ -40,6 +48,10 @@ export class BlockTemplates {
 
     static imageCard(id) {
         return `
+            <div class="block-controls">
+                <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, -1)">▲</button>
+                <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, 1)">▼</button>
+                <button class="btn-delete">X</button>
             <button class="btn-delete">X</button>
             <label>🖼️ 작품 이미지</label>
             <div class="drop-zone" id="drop_${id}">
@@ -56,6 +68,10 @@ export class BlockTemplates {
 
     static videoFile(id) {
         return `
+            <div class="block-controls">
+                <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, -1)">▲</button>
+                <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, 1)">▼</button>
+                <button class="btn-delete">X</button>
             <button class="btn-delete">X</button>
             <label>🎬 동영상 (MP4)</label>
             <div class="drop-zone" id="drop_${id}">
@@ -71,6 +87,10 @@ export class BlockTemplates {
 
     static sns(id) {
         return `
+            <div class="block-controls">
+                <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, -1)">▲</button>
+                <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, 1)">▼</button>
+                <button class="btn-delete">X</button>
             <button class="btn-delete">X</button>
             <label>🔗 SNS & 연락처</label>
             <label>GitHub / Social URL</label>
