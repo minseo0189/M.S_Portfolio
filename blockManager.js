@@ -138,4 +138,25 @@ createBlockElement(type, id, savedData) {
             imgData: document.getElementById(`data_${id}`)?.value
         };
     }
+
+    moveBlock(id, direction) {
+    const index = this.blocks.findIndex(b => b.id === id);
+    const targetIndex = index + direction;
+
+    // 범위를 벗어나면 중단
+    if (targetIndex < 0 || targetIndex >= this.blocks.length) return;
+
+    // 1. 데이터 배열 순서 바꾸기
+    [this.blocks[index], this.blocks[targetIndex]] = [this.blocks[targetIndex], this.blocks[index]];
+
+    // 2. HTML 화면 순서 바꾸기
+    const wrapper = document.getElementById(`block_wrapper_${id}`);
+    if (direction === -1) {
+        this.container.insertBefore(wrapper, wrapper.previousElementSibling);
+    } else {
+        this.container.insertBefore(wrapper.nextElementSibling, wrapper);
+    }
+
+    // 저장 트리거
+    document.dispatchEvent(new Event('blockChanged'));
 }
