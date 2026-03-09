@@ -10,6 +10,7 @@ class PortfolioBuilder {
         this.generator = new CodeGenerator();
         this.ui = new UIController();
         
+        window.app = this;
         this.init();
     }
 
