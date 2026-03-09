@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minseo's Portfolio Builder V24</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🩵</text></svg>">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="mobile-hint">⬅️ 좌우로 밀어서 설정/미리보기 전환 ➡️</div>
+
+    <div id="app-wrapper">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>🛡️ 포트폴리오 빌더 V24</h2>
+                <span id="saveStatus" class="save-status">대기 중...</span>
+            </div>
+            
+            <div class="scroll-area">
+                <div class="section-group" style="border-left: 4px solid #00ffcc;">
+                    <span class="section-title">✨ 1. 인트로 설정</span>
+                    <label>사이트 제목</label>
+                    <input type="text" id="introTitle" value="Minseo Portfolio">
+                    <label>입장 버튼</label>
+                    <input type="text" id="introBtnText" value="View Works">
+                    <label>도형 모양</label>
+                    <select id="shape">
+                        <option value="TorusGeometry">도넛 (Torus)</option>
+                        <option value="BoxGeometry">큐브 (Cube)</option>
+                        <option value="IcosahedronGeometry">보석 (Crystal)</option>
+                        <option value="TorusKnotGeometry">매듭 (Knot)</option>
+                    </select>
+                    <label>테마 컬러</label>
+                    <input type="color" id="color" value="#00ffcc">
+                </div>
+
+                <div class="section-group" style="border-left: 4px solid #ff00cc;">
+                    <span class="section-title">🧱 2. 콘텐츠 블록 추가</span>
+                    <div class="btn-add">
+                        <button data-block-type="profile">👤 프로필</button>
+                        <button data-block-type="text">📝 텍스트</button>
+                        <button data-block-type="image_card">🖼️ 작품 (사진)</button>
+                        <button data-block-type="video_file">🎬 동영상 (MP4)</button>
+                        <button data-block-type="sns" style="grid-column: span 2;">🔗 SNS / 연락처</button>
+                    </div>
+                    <div id="blockContainer"></div>
+                </div>
+
+                <button id="resetBtn">⚠️ 데이터 초기화 (새로 만들기)</button>
+                
+                <div class="footer-btns">
+                    <button class="btn-generate" id="btnGenerate">🚀 코드 생성</button>
+                    <button class="btn-download" id="btnDownload">💾 파일 저장</button>
+                    <button class="btn-copy" id="btnCopy">📋 복사</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-area">
+            <div class="guide-box">
+                <h3>📢 실행 방법 가이드</h3>
+                <ol>
+                    <li>포트폴리오 내용 작성 후 <b>[🚀 코드 생성]</b>을 누르세요.</li>
+                    <li><b>[💾 파일저장]</b>을 눌러 HTML 파일로 저장하세요.</li>
+                    <li>저장된 파일을 열면 완성된 사이트를 확인하실 수 있습니다.</li>
+                </ol>
+            </div>
+            <textarea id="resultCode" class="code-output" readonly placeholder="[🚀 코드 생성] 버튼을 누르면 여기에 코드가 나타납니다."></textarea>
+        </div>
+    </div>
+
+    <div class="mobile-nav">
+        <button class="nav-btn active" data-tab="setting">🛠️ 설정</button>
+        <button class="nav-btn" data-tab="preview">👁️ 미리보기</button>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
