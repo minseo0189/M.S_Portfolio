@@ -1,12 +1,12 @@
 /* ========================================
-   기본 스타일
+   1. 기본 스타일 (Dark Theme)
 ======================================== */
 body {
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
     background: #1e1e1e;
     color: #eee;
     margin: 0;
-    overflow: hidden;
+    overflow: hidden; /* 사이드바/미리보기 개별 스크롤 사용 */
 }
 
 #app-wrapper {
@@ -17,10 +17,10 @@ body {
 }
 
 /* ========================================
-   사이드바
+   2. 사이드바 (설정 영역)
 ======================================== */
 .sidebar {
-    width: 800px;
+    width: 450px;
     background: #252526;
     border-right: 1px solid #333;
     display: flex;
@@ -39,7 +39,7 @@ body {
 
 .sidebar-header h2 {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #00ffcc;
 }
 
@@ -52,414 +52,263 @@ body {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
-    padding-bottom: 80px;
+    padding-bottom: 100px;
 }
 
 /* ========================================
-   섹션 & 블록
+   3. 블록 및 입력 요소
 ======================================== */
 .section-group {
-    background: #333;
-    padding: 15px;
-    border-radius: 8px;
+    background: #2d2d2d;
+    border-radius: 12px;
+    padding: 20px;
     margin-bottom: 20px;
-    border: 1px solid #444;
+    border: 1px solid #3d3d3d;
     position: relative;
 }
 
 .section-title {
-    font-weight: bold;
-    margin-bottom: 10px;
     display: block;
-    color: #fff;
-    border-bottom: 1px solid #555;
-    padding-bottom: 5px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #00ffcc;
 }
 
-.btn-delete {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #ff4444;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    padding: 2px 8px;
-    font-size: 0.7rem;
-}
-
-.btn-delete:hover {
-    background: #ff6666;
-}
-
-/* ========================================
-   폼 요소
-======================================== */
 label {
     display: block;
     font-size: 0.85rem;
-    color: #aaa;
-    margin-top: 10px;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    color: #bbb;
+    margin-top: 15px;
 }
 
-input,
-select,
-textarea {
+input, textarea, select {
     width: 100%;
     background: #1e1e1e;
-    border: 1px solid #555;
-    color: white;
-    padding: 8px;
-    border-radius: 4px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 10px;
+    color: #fff;
     box-sizing: border-box;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-    border-color: #00ffcc;
-    outline: none;
-}
-
-textarea {
-    min-height: 80px;
-    resize: vertical;
     font-family: inherit;
 }
 
-/* ========================================
-   버튼
-======================================== */
-.btn-add {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5px;
-    margin-bottom: 20px;
+textarea {
+    height: 80px;
+    resize: vertical;
 }
 
-.btn-add button {
-    background: #444;
-    color: white;
-    border: 1px solid #555;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    transition: 0.2s;
-}
-
-.btn-add button:hover {
-    background: #555;
-    border-color: #00ffcc;
-    color: #00ffcc;
-}
-
-#resetBtn {
-    width: 100%;
-    padding: 10px;
-    background: #333;
-    color: #aaa;
-    border: 1px solid #444;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 10px;
-}
-
-#resetBtn:hover {
-    background: #444;
-    color: #fff;
-}
-
-.footer-btns {
+/* 블록 컨트롤 (순서변경/삭제) */
+.block-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
     display: flex;
     gap: 5px;
-    margin-top: 10px;
 }
 
-.btn-generate {
-    flex: 1.2;
-    padding: 15px 5px;
-    background: #00ffcc;
-    color: #000;
+.btn-move, .btn-delete {
+    background: #3d3d3d;
     border: none;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 0.9rem;
-    white-space: nowrap;
+    color: #fff;
+    width: 28px;
+    height: 28px;
     border-radius: 4px;
-}
-
-.btn-generate:hover {
-    background: #00ddaa;
-}
-
-.btn-download,
-.btn-copy {
-    flex: 1;
-    padding: 15px 0;
-    background: #2196F3;
-    color: white;
-    border: none;
-    font-weight: bold;
     cursor: pointer;
-    opacity: 0.5;
-    transition: 0.3s;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    border-radius: 4px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.btn-copy {
-    background: #444;
-    color: #00ffcc;
-}
+.btn-move:hover { background: #555; }
+.btn-delete:hover { background: #ff4d4d; }
 
-.btn-download.active,
-.btn-copy.active {
-    opacity: 1;
-}
-
-.btn-download.active:hover {
-    background: #1976D2;
-}
-
-.btn-copy.active:hover {
-    background: #555;
-}
-
-/* ========================================
-   파일 업로드
-======================================== */
+/* 이미지 업로드 영역 */
 .drop-zone {
     width: 100%;
-    height: 100px;
-    border: 2px dashed #555;
+    height: 150px;
+    background: #1e1e1e;
+    border: 2px dashed #444;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #888;
-    font-size: 0.8rem;
-    margin-bottom: 10px;
+    cursor: pointer;
     background-size: cover;
     background-position: center;
     position: relative;
     overflow: hidden;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.drop-zone:hover {
-    border-color: #00ffcc;
-    color: #fff;
-    background-color: #2a2a2a;
 }
 
 .drop-zone video {
-    display: none;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    position: absolute;
-}
-
-.drop-zone.has-video video {
-    display: block;
-}
-
-.drop-zone.has-video span {
     display: none;
 }
 
+.drop-zone.has-video video { display: block; }
+.drop-zone.has-video span { display: none; }
+
 /* ========================================
-   미리보기 영역
+   4. 미리보기 및 코드 출력
 ======================================== */
-.preview-area {
+.preview-container {
     flex: 1;
+    background: #1e1e1e;
     display: flex;
     flex-direction: column;
-    background: #111;
-    position: relative;
-    flex-shrink: 0;
 }
 
-.guide-box {
-    background: #222;
-    margin: 20px;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #444;
-    border-left: 4px solid #00ffcc;
-}
-
-.guide-box h3 {
-    margin: 0 0 10px 0;
-    color: #00ffcc;
-    font-size: 1rem;
-}
-
-.guide-box ol {
-    margin: 0;
-    padding-left: 20px;
-    color: #ccc;
-    font-size: 0.9rem;
-    line-height: 1.6;
+.code-area {
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .code-output {
     flex: 1;
-    padding: 20px;
-    color: #0f0;
+    background: #000;
+    color: #00ffcc;
     font-family: 'Courier New', monospace;
-    border: none;
-    resize: none;
-    outline: none;
-    line-height: 1.5;
-    background: transparent;
+    font-size: 0.85rem;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    margin-top: 10px;
 }
 
 /* ========================================
-   모바일 스타일
+   5. 하단 푸터 버튼 (메인 UI)
 ======================================== */
-.mobile-nav,
-.mobile-hint {
-    display: none;
+.sidebar-footer {
+    padding: 15px 20px;
+    background: #2d2d2d;
+    border-top: 1px solid #333;
 }
 
-@media (max-width: 768px) {
-    #app-wrapper {
-        width: 200vw;
-    }
+.footer-btns {
+    display: flex;
+    gap: 12px;
+}
 
-    .sidebar {
-        width: 100vw;
-        border-right: none;
-        height: 100vh;
-        padding-bottom: 60px;
-        box-sizing: border-box;
-    }
+.btn-generate {
+    flex: 1.5;
+    padding: 16px;
+    background: linear-gradient(135deg, #00ffcc 0%, #00e6b8 100%);
+    color: #000;
+    border: none;
+    font-weight: 800;
+    cursor: pointer;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+}
 
-    .preview-area {
-        width: 100vw;
-        height: 100vh;
-        padding-bottom: 60px;
-        box-sizing: border-box;
-    }
+.btn-download, .btn-copy {
+    flex: 1;
+    padding: 16px;
+    background: #3d3d3d;
+    border: 1px solid #444;
+    color: #888;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+}
 
-    /* 모바일 네비게이션 */
-    .mobile-nav {
-        display: flex;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 60px;
-        background: #2d2d2d;
-        border-top: 1px solid #444;
-        z-index: 999;
-    }
+.btn-download.active { color: #2196F3; border-color: #2196F3; }
+.btn-copy.active { color: #00ffcc; border-color: #00ffcc; }
 
-    .nav-btn {
-        flex: 1;
-        background: transparent;
-        border: none;
-        color: #888;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: 0.2s;
-    }
+/* ========================================
+   6. 이미지 편집 모달 (Discord 스타일)
+======================================== */
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none; /* 기본 숨김 */
+    justify-content: center;
+    align-items: center;
+    z-index: 99999; /* 최상단 */
+}
 
-    .nav-btn.active {
-        color: #00ffcc;
-        background: #333;
-        font-weight: bold;
-        border-top: 3px solid #00ffcc;
-    }
+.modal-content {
+    background: #2f3136; /* 디스코드 배경색 */
+    padding: 30px;
+    border-radius: 12px;
+    width: 360px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
 
-    /* 슬라이드 안내 */
-    .mobile-hint {
-        display: block;
-        position: fixed;
-        bottom: 70px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.7);
-        color: #00ffcc;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        pointer-events: none;
-        z-index: 1000;
-        border: 1px solid #00ffcc;
-        animation: blink 2s infinite;
-        white-space: nowrap;
-    }
+.modal-content h3 {
+    margin: 0 0 20px 0;
+    color: #fff;
+}
 
-    @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
-    }
+.crop-container {
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+    border-radius: 8px;
+}
 
-    .btn-generate,
-    .btn-download,
-    .btn-copy {
-        font-size: 0.8rem;
-    }
-   .crop-mask {
+#cropCanvas {
+    cursor: grab;
+}
+
+#cropCanvas:active {
+    cursor: grabbing;
+}
+
+.crop-mask {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
     width: 200px;
     height: 200px;
     border-radius: 50%;
     border: 2px solid #fff;
-    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5); /* 주변 어둡게 */
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.5);
     pointer-events: none;
-   }
 }
-/* ========================================
-   이미지 편집창 버튼 (민서 맞춤형)
-======================================== */
+
 .modal-btns {
     display: flex;
     gap: 12px;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .modal-btns button {
-    height: 48px;
-    border-radius: 12px; /* 둥글둥글하게 */
+    flex: 1;
+    height: 44px;
+    border-radius: 8px;
     font-weight: bold;
-    font-size: 0.9rem;
     cursor: pointer;
     border: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ❌ 취소 버튼: 차분한 다크 그레이 */
-#btnCropCancel {
-    flex: 1;
-    background: #444;
-    color: #bbb;
-}
+#btnCropCancel { background: #4f545c; color: #fff; }
+#btnCropApply { background: #00ffcc; color: #000; }
 
-#btnCropCancel:hover {
-    background: #555;
-    color: #fff;
-}
-
-/* ✅ 적용하기 버튼: 쨍한 청록색 그라데이션 */
-#btnCropApply {
-    flex: 1.5; /* 적용하기를 더 길게 */
-    background: linear-gradient(135deg, #00ffcc 0%, #00e6b8 100%);
-    color: #000;
-    box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
-}
-
-#btnCropApply:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 255, 204, 0.5);
-    filter: brightness(1.1);
+/* ========================================
+   7. 모바일 대응 (Media Query)
+======================================== */
+@media (max-width: 768px) {
+    .sidebar { width: 100vw; }
+    .preview-container { width: 100vw; }
+    
+    .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0; left: 0;
+        width: 100%; height: 60px;
+        background: #2d2d2d;
+        z-index: 1000;
+    }
 }
