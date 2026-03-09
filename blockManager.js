@@ -16,7 +16,7 @@ export class BlockManager {
         return id;
     }
 
-    createBlockElement(type, id, savedData) {
+createBlockElement(type, id, savedData) {
         const wrapper = document.createElement('div');
         wrapper.className = 'section-group';
         wrapper.id = `block_wrapper_${id}`;
@@ -25,66 +25,54 @@ export class BlockManager {
         const template = BlockTemplates.get(type, id);
         wrapper.innerHTML = template;
         
-        // [중요] document 대신 wrapper 안에서 직접 찾도록 수정!
-        wrapper.querySelector('.btn-delete').addEventListener('click', () => {
-            this.deleteBlock(id);
-        });
+        // [수정!] document 대신 wrapper 안에서 직접 버튼을 찾도록 바꿨어
+        const deleteBtn = wrapper.querySelector('.btn-delete');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => this.deleteBlock(id));
+        }
         
+        // 파일 업로드 기능이 있는 블록인 경우
         if (type === 'profile' || type === 'image_card' || type === 'video_file') {
             const dropZone = wrapper.querySelector(`#drop_${id}`);
             const fileInput = wrapper.querySelector(`#file_${id}`);
-            
-            dropZone.addEventListener('click', () => fileInput.click());
-            
-            fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const result = event.target.result;
-                    wrapper.querySelector(`#data_${id}`).value = result;
-                    if (type === 'video_file') {
-                        dropZone.classList.add('has-video');
-                        wrapper.querySelector(`#preview_${id}`).src = result;
-                    } else {
-                        dropZone.style.backgroundImage = `url(${result})`;
-                    }
-                    document.dispatchEvent(new Event('blockChanged'));
-                };
-                reader.readAsDataURL(file);
+            const dataInput = wrapper.querySelector(`#data_${id}`);
+            const previewVideo = wrapper.querySelector(`#preview_${id}`);
+
+            if (dropZone && fileInput) {
+                dropZone.addEventListener('click', () => fileInput.click());
+                
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const result = event.target.result;
+                        if (dataInput) dataInput.value = result;
+                        if (type === 'video_file' && previewVideo) {
+                            dropZone.classList.add('has-video');
+                            previewVideo.src = result;
+                        } else {
+                            dropZone.style.backgroundImage = `url(${result})`;
+                        }
+                        document.dispatchEvent(new Event('blockChanged'));
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+        
+        // 입력 필드 자동 저장 이벤트
+        wrapper.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', () => {
+                document.dispatchEvent(new Event('blockChanged'));
             });
+        });
+        
+        if (savedData) {
+            setTimeout(() => this.restoreBlockData(id, type, savedData), 0);
         }
         
         return wrapper;
-    }
-    
-    setupFileUpload(id, type) {
-        const dropZone = document.getElementById(`drop_${id}`);
-        const fileInput = document.getElementById(`file_${id}`);
-        
-        dropZone.addEventListener('click', () => fileInput.click());
-        
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const result = event.target.result;
-                document.getElementById(`data_${id}`).value = result;
-                
-                if (type === 'video_file') {
-                    dropZone.classList.add('has-video');
-                    document.getElementById(`preview_${id}`).src = result;
-                } else {
-                    dropZone.style.backgroundImage = `url(${result})`;
-                }
-                
-                // 저장 트리거
-                document.dispatchEvent(new Event('blockChanged'));
-            };
-            reader.readAsDataURL(file);
-        });
     }
 
     restoreBlockData(id, type, data) {
