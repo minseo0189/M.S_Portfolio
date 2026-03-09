@@ -7,11 +7,10 @@ export class BlockTemplates {
             video_file: this.videoFile(id),
             sns: this.sns(id)
         };
-        
         return templates[type] || '';
     }
 
-        static profile(id) {
+    static profile(id) {
         return `
             <div class="block-controls">
                 <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, -1)">▲</button>
@@ -19,9 +18,7 @@ export class BlockTemplates {
                 <button class="btn-delete">X</button>
             </div>
             <label>👤 프로필 이미지</label>
-            <div class="drop-zone" id="drop_${id}">
-                <span>사진 선택</span>
-            </div>
+            <div class="drop-zone" id="drop_${id}"><span>사진 선택</span></div>
             <input type="file" id="file_${id}" style="display:none" accept="image/*">
             <input type="hidden" id="data_${id}">
             <label>이름</label>
@@ -37,7 +34,7 @@ export class BlockTemplates {
                 <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, -1)">▲</button>
                 <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, 1)">▼</button>
                 <button class="btn-delete">X</button>
-            <button class="btn-delete">X</button>
+            </div>
             <label>📝 텍스트 블록</label>
             <label>제목</label>
             <input type="text" id="b_${id}_title" placeholder="제목">
@@ -52,11 +49,9 @@ export class BlockTemplates {
                 <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, -1)">▲</button>
                 <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, 1)">▼</button>
                 <button class="btn-delete">X</button>
-            <button class="btn-delete">X</button>
-            <label>🖼️ 작품 이미지</label>
-            <div class="drop-zone" id="drop_${id}">
-                <span>이미지 선택</span>
             </div>
+            <label>🖼️ 작품 이미지</label>
+            <div class="drop-zone" id="drop_${id}"><span>이미지 선택</span></div>
             <input type="file" id="file_${id}" style="display:none" accept="image/*">
             <input type="hidden" id="data_${id}">
             <label>작품명</label>
@@ -72,7 +67,7 @@ export class BlockTemplates {
                 <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, -1)">▲</button>
                 <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, 1)">▼</button>
                 <button class="btn-delete">X</button>
-            <button class="btn-delete">X</button>
+            </div>
             <label>🎬 동영상 (MP4)</label>
             <div class="drop-zone" id="drop_${id}">
                 <span>MP4 선택</span>
@@ -91,7 +86,7 @@ export class BlockTemplates {
                 <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, -1)">▲</button>
                 <button class="btn-move" onclick="event.stopPropagation(); window.app.blockManager.moveBlock(${id}, 1)">▼</button>
                 <button class="btn-delete">X</button>
-            <button class="btn-delete">X</button>
+            </div>
             <label>🔗 SNS & 연락처</label>
             <label>GitHub / Social URL</label>
             <input type="text" id="b_${id}_github" placeholder="GitHub URL">
