@@ -25,31 +25,39 @@ export class BlockManager {
         const template = BlockTemplates.get(type, id);
         wrapper.innerHTML = template;
         
-        // 삭제 버튼 이벤트
+        // [중요] document 대신 wrapper 안에서 직접 찾도록 수정!
         wrapper.querySelector('.btn-delete').addEventListener('click', () => {
             this.deleteBlock(id);
         });
         
-        // 파일 업로드 이벤트
         if (type === 'profile' || type === 'image_card' || type === 'video_file') {
-            this.setupFileUpload(id, type);
-        }
-        
-        // 입력 필드 이벤트 (자동 저장)
-        wrapper.querySelectorAll('input, textarea').forEach(input => {
-            input.addEventListener('input', () => {
-                document.dispatchEvent(new Event('blockChanged'));
+            const dropZone = wrapper.querySelector(`#drop_${id}`);
+            const fileInput = wrapper.querySelector(`#file_${id}`);
+            
+            dropZone.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const result = event.target.result;
+                    wrapper.querySelector(`#data_${id}`).value = result;
+                    if (type === 'video_file') {
+                        dropZone.classList.add('has-video');
+                        wrapper.querySelector(`#preview_${id}`).src = result;
+                    } else {
+                        dropZone.style.backgroundImage = `url(${result})`;
+                    }
+                    document.dispatchEvent(new Event('blockChanged'));
+                };
+                reader.readAsDataURL(file);
             });
-        });
-        
-        // 저장된 데이터 복원
-        if (savedData) {
-            this.restoreBlockData(id, type, savedData);
         }
         
         return wrapper;
     }
-
+    
     setupFileUpload(id, type) {
         const dropZone = document.getElementById(`drop_${id}`);
         const fileInput = document.getElementById(`file_${id}`);
