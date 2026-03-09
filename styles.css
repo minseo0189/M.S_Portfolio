@@ -417,6 +417,8 @@ textarea {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
+   }
+}
    /* ========================================
    이미지 편집 모달 (팝업창)
 ======================================== */
@@ -424,8 +426,8 @@ textarea {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.85); /* 배경 어둡게 */
-    display: none; /* 평소엔 숨김 */
+    background: rgba(0, 0, 0, 0.85);
+    display: none; /* 기본은 숨김, JS에서 flex로 바꿈 */
     justify-content: center;
     align-items: center;
     z-index: 10000;
@@ -441,12 +443,29 @@ textarea {
 }
 
 .modal-content h3 {
-    margin-top: 0;
+    margin: 0 0 20px 0;
     color: #00ffcc;
 }
 
 .crop-container {
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
     border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    background: #000;
 }
+
+.crop-mask {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
 }
