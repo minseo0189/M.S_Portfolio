@@ -206,22 +206,33 @@ export class BlockManager {
         canvas.width = 300;
         canvas.height = 300;
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // 확대 및 드래그 계산
-        const size = Math.min(img.width, img.height);
-        
-        // 원본 중심에서 확대 적용
-        const sW = size / zoom;
-        const sH = size / zoom;
-        const sX = (img.width - sW) / 2 - (x / zoom);
-        const sY = (img.height - sH) / 2 - (y / zoom);
+        // 1. 이미지 비율 및 화면 크기 계산
+        const ratio = img.width / img.height;
+        let dW, dH;
+        if (ratio > 1) { // 가로가 긴 사진
+            dH = 300 * zoom;
+            dW = dH * ratio;
+        } else { // 세로가 긴 사진
+            dW = 300 * zoom;
+            dH = dW / ratio;
+        }
 
-        // [중요] 캔버스의 중심에 그리도록 수정!
+        // 2. 이동 범위 제한 (Clamping) 로직 추가
+        // 이미지가 300x300 캔버스를 항상 덮도록 좌표를 제한해
+        const limitX = (dW - 300) / 2;
+        const limitY = (dH - 300) / 2;
+        
+        this.currentCrop.x = Math.max(-limitX, Math.min(limitX, x));
+        this.currentCrop.y = Math.max(-limitY, Math.min(limitY, y));
+
+        // 3. 그리기
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(
-            img, 
-            sX, sY, sW, sH, // 원본에서 크롭할 위치
-            0, 0, 300, 300 // 캔버스에 그릴 위치
+            img,
+            (300 - dW) / 2 + this.currentCrop.x,
+            (300 - dH) / 2 + this.currentCrop.y,
+            dW,
+            dH
         );
     }
 
