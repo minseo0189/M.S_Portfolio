@@ -1,4 +1,4 @@
-import { BlockTemplates } from '../templates/blockTemplates.js';
+import { BlockTemplates } from './blockTemplates.js';
 
 export class BlockManager {
     constructor() {
