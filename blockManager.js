@@ -5,6 +5,9 @@ export class BlockManager {
         this.blocks = [];
         this.counter = 0;
         this.container = document.getElementById('blockContainer');
+        
+        // 크롭 기능을 위한 임시 저장 변수
+        this.currentCrop = null;
     }
 
     addBlock(type, savedData = null) {
@@ -16,7 +19,7 @@ export class BlockManager {
         return id;
     }
 
-createBlockElement(type, id, savedData) {
+    createBlockElement(type, id, savedData) {
         const wrapper = document.createElement('div');
         wrapper.className = 'section-group';
         wrapper.id = `block_wrapper_${id}`;
@@ -25,40 +28,51 @@ createBlockElement(type, id, savedData) {
         const template = BlockTemplates.get(type, id);
         wrapper.innerHTML = template;
         
-        // [수정!] document 대신 wrapper 안에서 직접 버튼을 찾도록 바꿨어
-        const deleteBtn = wrapper.querySelector('.btn-delete');
-        if (deleteBtn) {
-            deleteBtn.addEventListener('click', () => this.deleteBlock(id));
-        }
+        // 1. 삭제 버튼 연결
+        wrapper.querySelector('.btn-delete').addEventListener('click', () => {
+            this.deleteBlock(id);
+        });
+
+        // 2. [추가] 순서 변경 버튼 연결 (▲, ▼)
+        const moveBtns = wrapper.querySelectorAll('.btn-move');
+        moveBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const direction = e.target.textContent === '▲' ? -1 : 1;
+                this.moveBlock(id, direction);
+            });
+        });
         
-        // 파일 업로드 기능이 있는 블록인 경우
+        // 3. 파일 업로드 및 크롭 연결
         if (type === 'profile' || type === 'image_card' || type === 'video_file') {
             const dropZone = wrapper.querySelector(`#drop_${id}`);
             const fileInput = wrapper.querySelector(`#file_${id}`);
-            const dataInput = wrapper.querySelector(`#data_${id}`);
-            const previewVideo = wrapper.querySelector(`#preview_${id}`);
+            
+            dropZone.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
 
-            if (dropZone && fileInput) {
-                dropZone.addEventListener('click', () => fileInput.click());
-                
-                fileInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
+                // [중요] 프로필일 때만 크롭 모달 띄우기
+                if (type === 'profile') {
+                    this.initCropModal(file, id);
+                } else {
+                    // 나머지는 기존처럼 바로 처리
                     const reader = new FileReader();
                     reader.onload = (event) => {
                         const result = event.target.result;
-                        if (dataInput) dataInput.value = result;
-                        if (type === 'video_file' && previewVideo) {
+                        wrapper.querySelector(`#data_${id}`).value = result;
+                        if (type === 'video_file') {
                             dropZone.classList.add('has-video');
-                            previewVideo.src = result;
+                            wrapper.querySelector(`#preview_${id}`).src = result;
                         } else {
                             dropZone.style.backgroundImage = `url(${result})`;
                         }
                         document.dispatchEvent(new Event('blockChanged'));
                     };
                     reader.readAsDataURL(file);
-                });
-            }
+                }
+            });
         }
         
         // 입력 필드 자동 저장 이벤트
@@ -75,33 +89,96 @@ createBlockElement(type, id, savedData) {
         return wrapper;
     }
 
-    restoreBlockData(id, type, data) {
-        const fields = {
-            name: `b_${id}_name`,
-            title: `b_${id}_title`,
-            desc: `b_${id}_desc`,
-            github: `b_${id}_github`,
-            blog: `b_${id}_blog`,
-            email: `b_${id}_email`
+    // --- 프로필 크롭 기능 관련 함수 ---
+    initCropModal(file, blockId) {
+        const modal = document.getElementById('cropModal');
+        const canvas = document.getElementById('cropCanvas');
+        const ctx = canvas.getContext('2d');
+        const zoomSlider = document.getElementById('zoomSlider');
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                modal.style.display = 'flex';
+                this.currentCrop = { img, blockId, zoom: 1, x: 0, y: 0 };
+                this.drawCropCanvas();
+            };
+            img.src = e.target.result;
         };
-        
+        reader.readAsDataURL(file);
+
+        // 적용 버튼 클릭 시
+        document.getElementById('btnCropApply').onclick = () => {
+            const croppedData = canvas.toDataURL('image/jpeg');
+            const wrapper = document.getElementById(`block_wrapper_${blockId}`);
+            wrapper.querySelector(`#data_${blockId}`).value = croppedData;
+            wrapper.querySelector(`#drop_${blockId}`).style.backgroundImage = `url(${croppedData})`;
+            
+            modal.style.display = 'none';
+            document.dispatchEvent(new Event('blockChanged'));
+        };
+
+        // 취소 버튼
+        document.getElementById('btnCropCancel').onclick = () => {
+            modal.style.display = 'none';
+        };
+
+        // 확대 슬라이더
+        zoomSlider.oninput = (e) => {
+            this.currentCrop.zoom = parseFloat(e.target.value);
+            this.drawCropCanvas();
+        };
+    }
+
+    drawCropCanvas() {
+        const canvas = document.getElementById('cropCanvas');
+        const ctx = canvas.getContext('2d');
+        const { img, zoom } = this.currentCrop;
+
+        canvas.width = 300;
+        canvas.height = 300;
+
+        const size = Math.min(img.width, img.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(
+            img, 
+            (img.width - size) / 2, (img.height - size) / 2, size, size, // 원본 중심 크롭
+            (300 - 300 * zoom) / 2, (300 - 300 * zoom) / 2, 300 * zoom, 300 * zoom // 확대 적용
+        );
+    }
+
+    // --- 기존 유지 기능들 ---
+    moveBlock(id, direction) {
+        const index = this.blocks.findIndex(b => b.id === id);
+        const targetIndex = index + direction;
+        if (targetIndex < 0 || targetIndex >= this.blocks.length) return;
+
+        [this.blocks[index], this.blocks[targetIndex]] = [this.blocks[targetIndex], this.blocks[index]];
+
+        const wrapper = document.getElementById(`block_wrapper_${id}`);
+        if (direction === -1) {
+            this.container.insertBefore(wrapper, wrapper.previousElementSibling);
+        } else {
+            this.container.insertBefore(wrapper.nextElementSibling, wrapper);
+        }
+        document.dispatchEvent(new Event('blockChanged'));
+    }
+
+    restoreBlockData(id, type, data) {
+        const fields = { name: `b_${id}_name`, title: `b_${id}_title`, desc: `b_${id}_desc`, github: `b_${id}_github`, blog: `b_${id}_blog`, email: `b_${id}_email` };
         Object.entries(fields).forEach(([key, elementId]) => {
             const el = document.getElementById(elementId);
-            if (el && data[key]) {
-                el.value = data[key];
-            }
+            if (el && data[key]) el.value = data[key];
         });
-        
-        // 이미지/비디오 데이터 복원
         if (data.imgData) {
             const dataEl = document.getElementById(`data_${id}`);
             if (dataEl) dataEl.value = data.imgData;
-            
             const dropZone = document.getElementById(`drop_${id}`);
             if (type === 'video_file') {
                 dropZone.classList.add('has-video');
                 document.getElementById(`preview_${id}`).src = data.imgData;
-            } else if (type === 'profile' || type === 'image_card') {
+            } else {
                 dropZone.style.backgroundImage = `url(${data.imgData})`;
             }
         }
@@ -111,8 +188,6 @@ createBlockElement(type, id, savedData) {
         const wrapper = document.getElementById(`block_wrapper_${id}`);
         if (wrapper) wrapper.remove();
         this.blocks = this.blocks.filter(b => b.id !== id);
-        
-        // 저장 트리거
         document.dispatchEvent(new Event('blockChanged'));
     }
 
@@ -138,25 +213,4 @@ createBlockElement(type, id, savedData) {
             imgData: document.getElementById(`data_${id}`)?.value
         };
     }
-
-    moveBlock(id, direction) {
-    const index = this.blocks.findIndex(b => b.id === id);
-    const targetIndex = index + direction;
-
-    // 범위를 벗어나면 중단
-    if (targetIndex < 0 || targetIndex >= this.blocks.length) return;
-
-    // 1. 데이터 배열 순서 바꾸기
-    [this.blocks[index], this.blocks[targetIndex]] = [this.blocks[targetIndex], this.blocks[index]];
-
-    // 2. HTML 화면 순서 바꾸기
-    const wrapper = document.getElementById(`block_wrapper_${id}`);
-    if (direction === -1) {
-        this.container.insertBefore(wrapper, wrapper.previousElementSibling);
-    } else {
-        this.container.insertBefore(wrapper.nextElementSibling, wrapper);
-    }
-
-    // 저장 트리거
-    document.dispatchEvent(new Event('blockChanged'));
 }
