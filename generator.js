@@ -92,10 +92,10 @@ export class CodeGenerator {
         let html = '<div class="sns-container">';
         
         if (github) {
-            html += `<a href="${github}" target="_blank" class="sns-btn">🎨 Social</a>`;
+            html += `<a href="${github}" target="_blank" class="sns-btn">🔗 Github</a>`;
         }
         if (blog) {
-            html += `<a href="${blog}" target="_blank" class="sns-btn">🔗 Link</a>`;
+            html += `<a href="${blog}" target="_blank" class="sns-btn">🎨 Social</a>`;
         }
         if (email) {
             html += `<a href="javascript:void(0)" 
