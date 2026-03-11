@@ -65,16 +65,72 @@ export class BlockManager {
         const canvas = document.getElementById('cropCanvas');
         const zoomSlider = document.getElementById('zoomSlider');
         const reader = new FileReader();
+
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
                 modal.style.display = 'flex';
-                this.currentCrop = { img, blockId, zoom: 1 };
+                // 이미지 위치(x, y)와 드래그 상태를 추적하기 위한 상태 추가
+                this.currentCrop = { 
+                    img, 
+                    blockId, 
+                    zoom: 1, 
+                    x: 0, 
+                    y: 0, 
+                    isDragging: false, 
+                    startX: 0, 
+                    startY: 0 
+                };
                 this.drawCropCanvas();
             };
             img.src = e.target.result;
         };
         reader.readAsDataURL(file);
+
+        // 마우스 드래그 이벤트 리스너
+        canvas.onmousedown = (e) => {
+            if (!this.currentCrop) return;
+            this.currentCrop.isDragging = true;
+            this.currentCrop.startX = e.offsetX - this.currentCrop.x;
+            this.currentCrop.startY = e.offsetY - this.currentCrop.y;
+        };
+
+        window.onmousemove = (e) => {
+            if (!this.currentCrop || !this.currentCrop.isDragging) return;
+            const rect = canvas.getBoundingClientRect();
+            this.currentCrop.x = (e.clientX - rect.left) - this.currentCrop.startX;
+            this.currentCrop.y = (e.clientY - rect.top) - this.currentCrop.startY;
+            this.drawCropCanvas();
+        };
+
+        window.onmouseup = () => {
+            if (this.currentCrop) this.currentCrop.isDragging = false;
+        };
+
+        // 모바일 사용자를 위한 터치 이벤트 추가
+        canvas.ontouchstart = (e) => {
+            if (!this.currentCrop) return;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            this.currentCrop.isDragging = true;
+            this.currentCrop.startX = (touch.clientX - rect.left) - this.currentCrop.x;
+            this.currentCrop.startY = (touch.clientY - rect.top) - this.currentCrop.startY;
+            e.preventDefault();
+        };
+
+        canvas.ontouchmove = (e) => {
+            if (!this.currentCrop || !this.currentCrop.isDragging) return;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            this.currentCrop.x = (touch.clientX - rect.left) - this.currentCrop.startX;
+            this.currentCrop.y = (touch.clientY - rect.top) - this.currentCrop.startY;
+            this.drawCropCanvas();
+            e.preventDefault();
+        };
+
+        canvas.ontouchend = () => {
+            if (this.currentCrop) this.currentCrop.isDragging = false;
+        };
 
         document.getElementById('btnCropApply').onclick = () => {
             const croppedData = canvas.toDataURL('image/jpeg');
@@ -83,7 +139,12 @@ export class BlockManager {
             modal.style.display = 'none';
             document.dispatchEvent(new Event('blockChanged'));
         };
-        document.getElementById('btnCropCancel').onclick = () => modal.style.display = 'none';
+
+        document.getElementById('btnCropCancel').onclick = () => {
+            modal.style.display = 'none';
+            this.currentCrop = null;
+        };
+
         zoomSlider.oninput = (e) => { 
             if (this.currentCrop) {
                 this.currentCrop.zoom = parseFloat(e.target.value); 
@@ -95,11 +156,22 @@ export class BlockManager {
     drawCropCanvas() {
         const canvas = document.getElementById('cropCanvas');
         const ctx = canvas.getContext('2d');
-        const { img, zoom } = this.currentCrop;
-        canvas.width = 300; canvas.height = 300;
+        if (!this.currentCrop) return;
+
+        const { img, zoom, x, y } = this.currentCrop;
+        canvas.width = 300; 
+        canvas.height = 300;
+        
         const size = Math.min(img.width, img.height);
         ctx.clearRect(0, 0, 300, 300);
-        ctx.drawImage(img, (img.width-size)/2, (img.height-size)/2, size, size, (300-300*zoom)/2, (300-300*zoom)/2, 300*zoom, 300*zoom);
+        
+        // 현재 x, y 좌표를 반영하여 이미지 그리기
+        const dx = (300 - 300 * zoom) / 2 + x;
+        const dy = (300 - 300 * zoom) / 2 + y;
+        const dWidth = 300 * zoom;
+        const dHeight = 300 * zoom;
+
+        ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, dx, dy, dWidth, dHeight);
     }
 
     moveBlock(id, direction) {
