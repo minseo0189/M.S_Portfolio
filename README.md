@@ -1,6 +1,7 @@
 # test_b
 
-main branch test 111
+Portfolio Builder for artists!
+아티스트들을 위한 포트폴리오 제작 사이트입니다!
 
 ## H2
 
