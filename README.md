@@ -10,6 +10,11 @@ The result can turn out like this!<br>
 
 ## H2
 
+I am a student.<br>
+I would appreciate it if you could give me various opinions.<br>
+학생입니다.<br>
+여러가지 의견 주시면 감사하겠습니다.
+
 ### Code
 ```
 var induk = "induk univercity"
