@@ -15,10 +15,7 @@ I would appreciate it if you could give me various opinions.<br>
 학생입니다.<br>
 여러가지 의견 주시면 감사하겠습니다.
 
-### Code
+### Things to fix
 ```
-var induk = "induk univercity"
-var induk = "induk univercity"
-var induk = "induk univercity"
-var induk = "induk univercity"
+ㅇㅇ
 ```
